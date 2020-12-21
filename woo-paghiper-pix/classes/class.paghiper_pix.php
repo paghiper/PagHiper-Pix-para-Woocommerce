@@ -250,7 +250,6 @@
 		//validar
 		$erros = 0;
 		$cpf_cnpj = new ValidaCPFCNPJPagHiperPix($this->get_post('fiscal'));
-		$minimo
 		if($this->get_post('fiscal')==''){
 			$this->tratar_erro("Informe um CPF/CNPJ v&aacute;lido do pagador!");
 			$erros++;
@@ -258,7 +257,7 @@
 			$this->tratar_erro("O CPF/CNPJ n&atilde;o &eacute; v&aacute;lido, corrija o mesmo!");
 			$erros++;
 		}elseif($total_cart < $minimo){
-			$this->tratar_erro("O valor m&iacute;nimo para pagamentos por Pix &eacute; de R$".$minimo."!");
+			$this->tratar_erro("O valor m&iacute;nimo para pagamentos por Pix &eacute; de R$".number_format($minimo, 2, '.', '')."!");
 			$erros++;
 		}
 		if($erros>0){
