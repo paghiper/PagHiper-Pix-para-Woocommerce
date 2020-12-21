@@ -324,7 +324,7 @@
 			$k = 1;
 			foreach ( $order->get_items() as $order_item ) {
 				if ( $order_item['qty'] ) {
-					$item_total = $order->get_item_subtotal( $order_item, false );
+					$item_total = $order->get_item_total( $order_item, false );
 					if ( 0 > $item_total ) {
 						continue;
 					}
