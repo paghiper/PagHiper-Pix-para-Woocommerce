@@ -12,10 +12,10 @@
 <img style="border:1px solid #CCC; border-radius:5px;" src="data:image/png;base64,<?php echo $data['pix_code']['qrcode_base64'];?>">
 </p>
 
-<p><b>Copiar/colar:</b><br>
-<span title="Clique para copiar!" id="selectablepix" onclick="selectText()"><?php echo $data['pix_code']['emv'];?></span></p>
+<p><b>Pix Copiar/colar (clique no mesmo para copiar automaticamente):</b><br>
+<code><span title="Clique para copiar automaticamente!" id="selectablepix" onclick="selectText()"><?php echo $data['pix_code']['emv'];?></span></code></p>
 
-<p>Conclua o seu pagamento via o App de seu banco preferido, caso esteja finalizado via Mobile use o c&oacute;digo copiar/colar exibido para pagamento, qualquer d&uacute;vida contate o atendimento de nossa loja.</p>
+<p>Conclua o pagamento do pedido via App de seu banco preferido, e para pedidos por Celular use o c&oacute;digo copiar/colar exibido acima, basta apenas clicar no mesmo para copiar automaticamente, qualquer d&uacute;vida contate o atendimento de nossa loja.</p>
 
 </div>
 <input type="hidden" id="pix-copiar-colar" value="<?php echo $data['pix_code']['emv'];?>">
@@ -42,5 +42,6 @@
 	  document.execCommand("copy");
 	  $temp.remove();
 	  console.log('copiado: '+element.val()+'');
+	  alert('Pix copiado com sucesso!');
 	}
 </script>

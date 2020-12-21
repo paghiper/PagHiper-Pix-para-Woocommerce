@@ -125,8 +125,8 @@
 			$html = '<h2>Pagamento Pix</h2>';
 			$html .= '<p class="order_details">';
 			$html .= 'Conclua o seu pagamento via o App de seu banco preferido.<br />';
-			$html .= '' . sprintf( __( '<b>Transação PagHiper:</b><br>%s', 'woo-paghiper-pix' ), $data['transaction_id'] ) . '<br />';
-			$html .= '' . sprintf( __( '<b>Ver Pix:</b><br>%s', 'woo-paghiper-pix' ), '<a target="_blank" href="'.$order->get_checkout_order_received_url().'">'.$order->get_checkout_order_received_url().'</a><br />');
+			$html .= '' . sprintf( __( '<b>Transação PagHiper:</b><br />%s', 'woo-paghiper-pix' ), $data['transaction_id'] ) . '<br />';
+			$html .= '' . sprintf( __( '<b>Ver Pix:</b><br />%s', 'woo-paghiper-pix' ), '<a target="_blank" href="'.$order->get_checkout_order_received_url().'">'.$order->get_checkout_order_received_url().'</a><br />');
 			$html .= '</p>';
 			echo $html;
 		}else{
@@ -187,12 +187,6 @@
 							'description' => __('Prazo de validade em dias para o Pix (Ex: 3).', 'woo-paghiper-pix'),
 							'default' => ''
 						),
-			'minimo' => array(
-							'title' => "<b>Total M&iacute;nimo (0.00)</b>",
-							'type' 			=> 'text',
-							'description' => __('Total minimo para usar o módulo, por padrão o valor mínimo aceito para recebimento Pix junto a PagHiper é de 3.00, portanto não configure um valor menor que este.', 'woo-paghiper-pix'),
-							'default' => ''
-						),
 			'pago' => array(
 							'title' => "<b>Status Pago</b>",
 							'type' 			=> 'select',
@@ -239,7 +233,7 @@
 	public function validate_fields() {
 		global $woocommerce;
 		//total do pedido
-		$minimo = (float)$this->settings['minimo'];
+		$minimo = 3.00;
 		if(!isset($_GET['pay_for_order'])){
 			$total_cart = number_format($this->get_order_total(), 2, '.', '');
 		}else{
@@ -321,7 +315,7 @@
 		$json['payer_phone'] = $telefone;
 		$json['partners_id'] = '';
 		$json['notification_url'] = admin_url('admin-ajax.php?action=woo_paghiper_pix_webhook');
-		$json['shipping_price_cents'] = number_format($order->get_shipping_total(), 2, '', '');
+		$json['shipping_price_cents'] = $order->get_shipping_total();
 		$json['days_due_date'] = (int)$this->settings['validade'];
 		
 		//produtos 
@@ -330,7 +324,7 @@
 			$k = 1;
 			foreach ( $order->get_items() as $order_item ) {
 				if ( $order_item['qty'] ) {
-					$item_total = $order->get_item_total( $order_item, false );
+					$item_total = $order->get_item_subtotal( $order_item, false );
 					if ( 0 > $item_total ) {
 						continue;
 					}
@@ -344,17 +338,27 @@
 			}
 		}
 		
-		//trata as fees (taxas)
-		$descontos = abs($order->get_total_discount());
+		//impostos
+		$impostos = $order->get_total_tax();
+		if($impostos > 0){
+			$json['items'][$k]['item_id'] = 'IMP-'.date('dmYis').'';
+			$json['items'][$k]['description'] = 'Impostos';
+			$json['items'][$k]['quantity'] = 1;
+			$json['items'][$k]['price_cents'] = number_format($impostos, 2, '', '');
+			$k++;
+		}
+		
+		//trata as fees
+		$descontos = 0;
 		foreach( $order->get_items('fee') as $item_id => $item_fee ){
 			$fee_total = $item_fee->get_total();
 			if($fee_total > 0){
-				$json['items'][$k]['item_id'] = date('dmYis');
+				$json['items'][$k]['item_id'] = 'FEE-'.date('dmYis').'';
 				$json['items'][$k]['description'] = substr($item_fee->get_name(),0,99);
 				$json['items'][$k]['quantity'] = 1;
 				$json['items'][$k]['price_cents'] = number_format($fee_total, 2, '', '');
 				$k++;
-			}else{
+			}elseif($fee_total < 0){
 				$descontos += abs($item_fee->get_total());
 			}
 		}
