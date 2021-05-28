@@ -1,8 +1,7 @@
 # [Paghiper PIX para Woocommerce](https://wordpress.org/plugins/woo-boleto-paghiper/)
 
-Este plug-in foi incorporado ao plug-in publicado no repositório de plugins do Wordpress. Agora você pode receber tanto por PIX como por boletos usando um único plugin.
+Este plug-in foi incorporado ao "WooCommerce Boleto e PIX PagHiper", disponível no repositório de plugins do Wordpress. Agora você pode receber tanto por PIX como por boletos usando um único plugin.
 A instalação e atualização é descomplicada: 
-
 
 # Instalando o Plugin PagHiper Pix em sua loja Woocommerce
 
